@@ -1,6 +1,5 @@
 const request = require("request-promise");
-const USER_NAME ="KS250324"
-const PASS_WORD="Tai$9876" ;
+let config = require("./config");
 const URL_LOGIN ="https://portal.fecredit.com.vn/Default.aspx?a=l";
 const URL_REPAYMEN= "https://portal.fecredit.com.vn/F1/PDFE_RP_Search.aspx";
 const cheerio = require("cheerio");
@@ -22,8 +21,8 @@ const getCookieUser = async ()=>{
                 '__EVENTTARGET': '',
                 '__EVENTARGUMENT': '',
                 'ToolkitScriptManager1_HiddenField':' ;;AjaxControlToolkit, Version=4.1.60501.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en-US:5c09f731-4796-4c62-944b-da90522e2541:475a4ef5:5546a2b:d2e10b12:effe2a26:b209f5e5',
-                'ctl00$MainContent$txtUserName': USER_NAME,
-                'ctl00$MainContent$txtPassword': PASS_WORD,
+                'ctl00$MainContent$txtUserName': config.username,
+                'ctl00$MainContent$txtPassword': config.password,
                 'ctl00$MainContent$btnLogin': 'Login',
                 'ctl00$hidGlobalGeneralError': 'Lỗi hệ thống, vui lòng liên hệ IT để được hỗ trợ. Cảm ơn.',
                 'ctl00$hidGlobalAccessDeniedMsg': 'Bạn chưa được cấp quyền truy cập vào trang này, vui lòng liên hệ IT để được hỗ trợ. Cảm ơn.',
