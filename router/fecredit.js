@@ -19,6 +19,7 @@ router.get("/",async function(req,res){
         let dataInfo = await getInfoRepayment(card,contract,dataCookie);
         return res.status(200).send(dataInfo);
     } catch (error) {
+        console.log(error);
         res.send(error);
     }
 })
