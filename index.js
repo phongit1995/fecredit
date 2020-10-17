@@ -1,0 +1,13 @@
+require("dotenv").config();
+let express = require("express");
+let app = express();
+let cros = require("cors");
+let bodyParser  = require("body-parser");
+let feCreditRoute = require("./router/fecredit");
+app.use(cros());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use("/fecredit",feCreditRoute);
+app.listen(process.env.PORT||3000,function(){
+    console.log("App running On Port : " + process.env.PORT||3000)
+})
