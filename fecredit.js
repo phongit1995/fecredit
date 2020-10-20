@@ -5,7 +5,6 @@ const URL_REPAYMEN= "https://portal.fecredit.com.vn/F1/PDFE_RP_Search.aspx";
 const cheerio = require("cheerio");
 let {parseCookie} = require("./common/string");
 const getCookieUser = async ()=>{
-    console.log(config);
     try {
         const options ={
             method:"POST",
@@ -100,6 +99,7 @@ const getDataReviews =async (Application,Contract,cookie)=>{
         },
     }
     let data = await request(options);
+    data = data.replace("/Images/FE_CREDIT_Logo_ngang.png","http://taichinh.caphethat.net/upload/FE_CREDIT_Logo_ngang.png");
     return data ;
 }
 module.exports={

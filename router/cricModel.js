@@ -41,8 +41,12 @@ const loginToWeb = async (cmnd)=>{
     }
     let element = await page.$('[id="T:oc_5065589220region1:btntimkiemkh"]');
     await page.waitFor(100);
-    await element.click();
-    await page.waitFor(500);
+    // await element.click();
+    // await page.waitFor(1000);
+    await Promise.all([
+        element.click(),
+        waitForNetworkIdle(page, 1000, 0) // equivalent to 'networkidle0'
+    ]);
     let data = await page.evaluate(() => document.querySelector('*').outerHTML);
     let $ = cheerio.load(data);
     let cic = $(".x10q>tbody>tr:nth-child(1)>td:nth-child(2)").text();
@@ -50,24 +54,81 @@ const loginToWeb = async (cmnd)=>{
         await browser.close();
         throw "NOT_FOUND_CIC";
     }
-    console.log(cic);
+    console.log("cic la: " + cic);
     await page.goto("https://cic.org.vn/webcenter/portal/CMSPortal?_afrLoop=503527279814704#%2Foracle%2Fwebcenter%2Fpage%2FscopedMD%2Fs774abad3_0d36_4122_a489_ccf21aaa3a66%2FPage225.jspx%40%3F_adf.ctrl-state%3Drgq4sieej_4",
     {
         waitUntil: 'networkidle2'
     })
-    await page.evaluate((cic) => {
-        document.getElementById("T:oc_6025695556region1:txtmacic::content").value = cic;
-    },cic);
+    const InputCic=await page.$('[id="T:oc_6025695556region1:txtmacic::content"]');
+    await InputCic.focus();
+    await page.keyboard.type(cic);
+    await Promise.all([
+        page.focus('[id="T:oc_6025695556region1:txtdkkd::content"]'),
+        waitForNetworkIdle(page, 100, 0) // equivalent to 'networkidle0'
+    ]);
     let buttonSearch = await page.$('[id="T:oc_6025695556region1:btnhotrotimkiem"]');
-    await buttonSearch.click();
-    await page.waitFor(500);
+    await Promise.all([
+        buttonSearch.click(),
+        waitForNetworkIdle(page, 500, 0) // equivalent to 'networkidle0'
+    ]);
     let buttonYes = await page.$('[id="T:oc_6025695556region1:tnYes"]');
-    console.log(buttonYes);
-    await buttonYes.click();
-    console.log("Phong");
+    await Promise.all([
+        buttonYes.click(),
+        waitForNetworkIdle(page, 300, 0) // equivalent to 'networkidle0'
+    ]);
+    let result = await page.evaluate(()=>{
+        let cic = document.getElementById("T:oc_6025695556region1:txtmacic::content").value ;
+        let dkkd = document.getElementById("T:oc_6025695556region1:txtdkkd::content").value ;
+        let cmnd = document.getElementById("T:oc_6025695556region1:txtcmnd::content").value ;
+        let ten = document.getElementById("T:oc_6025695556region1:txttenkh::content").value ;
+        let diachi = document.getElementById("T:oc_6025695556region1:txtdiachi::content").value ;
+        let dienthoai = document.getElementById("T:oc_6025695556region1:txtdienthoai::content").value ;
+        let masothue = document.getElementById("T:oc_6025695556region1:txtmsthue::content").value ;
+        let tgd = document.getElementById("T:oc_6025695556region1:txttgd::content").value ;
+        return {
+            cic,dkkd,cmnd,ten,diachi,dienthoai,masothue,tgd
+        }
+    })
+    let dataHtml = await page.evaluate(() => document.querySelector('*').outerHTML);
+    $= cheerio.load(dataHtml);
+    let thongbao = $("tbody > tr:nth-child(4) > td.x51 > span").text();
+    console.log(thongbao);
     await page.screenshot({path: 'example.png'});
-    //await browser.close();
+    await browser.close();
+    return result ;
 }
 module.exports ={
     loginToWeb
 }
+function waitForNetworkIdle(page, timeout, maxInflightRequests = 0) {
+    page.on('request', onRequestStarted);
+    page.on('requestfinished', onRequestFinished);
+    page.on('requestfailed', onRequestFinished);
+  
+    let inflight = 0;
+    let fulfill;
+    let promise = new Promise(x => fulfill = x);
+    let timeoutId = setTimeout(onTimeoutDone, timeout);
+    return promise;
+  
+    function onTimeoutDone() {
+      page.removeListener('request', onRequestStarted);
+      page.removeListener('requestfinished', onRequestFinished);
+      page.removeListener('requestfailed', onRequestFinished);
+      fulfill();
+    }
+  
+    function onRequestStarted() {
+      ++inflight;
+      if (inflight > maxInflightRequests)
+        clearTimeout(timeoutId);
+    }
+  
+    function onRequestFinished() {
+      if (inflight === 0)
+        return;
+      --inflight;
+      if (inflight === maxInflightRequests)
+        timeoutId = setTimeout(onTimeoutDone, timeout);
+    }
+  }
