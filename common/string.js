@@ -22,4 +22,14 @@ function objToString (obj) {
     }
     return str;
 }
- module.exports = {parseCookie}
+function cookieArrayPase(obj){
+    let result = [];
+    Object.keys(obj).forEach(function(key){
+        result.push({
+            name:key,value:obj[key],
+            url:"https://cic.org.vn"
+        })
+    })
+    return result;
+}
+ module.exports = {parseCookie,cookieArrayPase}
