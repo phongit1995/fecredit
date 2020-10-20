@@ -1,3 +1,4 @@
+const { response } = require("express");
 let express = require("express");
 let router = express.Router();
 let CacheManage = require('./../common/nodeCache');
@@ -11,10 +12,9 @@ router.get("/",async function(req,res){
                 message:"Nhap Card va contact"
             })
         }
-        let dataCookie = CacheManage.getCache(DATA_COOKIE);
-        if(!dataCookie){
-            dataCookie=await getCookieUser();
-            CacheManage.setCache(DATA_COOKIE,dataCookie);
+        let dataCookie=await getCookieUser();
+        if(dataCookie=="GET_COOKIE_ERROR"){
+            return res.send("GET_COOKIE_ERROR");
         }
         let dataInfo = await getInfoRepayment(card,contract,dataCookie);
         return res.status(200).send(dataInfo);
@@ -31,10 +31,9 @@ router.get("/review",async function(req,res){
                 message:"Nhap application_id va contact_id"
             })
         }
-        let dataCookie = CacheManage.getCache(DATA_COOKIE);
-        if(!dataCookie){
-            dataCookie=await getCookieUser();
-            CacheManage.setCache(DATA_COOKIE,dataCookie);
+        let dataCookie=await getCookieUser();
+        if(dataCookie=="GET_COOKIE_ERROR"){
+            return res.send("GET_COOKIE_ERROR");
         }
         let dataInfo = await getDataReviews(application,contract,dataCookie);
         return res.status(200).send(dataInfo);

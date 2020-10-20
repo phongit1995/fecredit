@@ -1,6 +1,6 @@
 module.exports ={
     fecredit:{
-        username:"KS250323",
+        username:"KS250324",
         password:"Tai$9876"
     },
     cic:{

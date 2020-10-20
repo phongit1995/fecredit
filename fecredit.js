@@ -5,6 +5,7 @@ const URL_REPAYMEN= "https://portal.fecredit.com.vn/F1/PDFE_RP_Search.aspx";
 const cheerio = require("cheerio");
 let {parseCookie} = require("./common/string");
 const getCookieUser = async ()=>{
+    console.log(config);
     try {
         const options ={
             method:"POST",
@@ -33,7 +34,7 @@ const getCookieUser = async ()=>{
             resolveWithFullResponse:true
         }
         let data = await request(options);
-        throw "GET_COOKIE_ERROR" ;
+        return "GET_COOKIE_ERROR" ;
     } catch (error) {
         result =error.response.headers['set-cookie'].join(";");
         let cookie =parseCookie(result);
@@ -41,6 +42,7 @@ const getCookieUser = async ()=>{
     }
 }
 const getInfoRepayment =async (cardNumber,contractNumber,cookie)=>{
+    console.log(cookie);
     const options= {
             method: 'POST',
             url: URL_REPAYMEN,
