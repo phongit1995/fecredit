@@ -5,16 +5,16 @@ let puppeteer = require("puppeteer");
 const URL_LOGIN ="https://cic.org.vn/webcenter/j_security_check";
 
 const loginToWeb = async (cmnd)=>{
-    const browser = await puppeteer.launch({headless: false,
+    const browser = await puppeteer.launch({headless: true,
         ignoreHTTPSErrors: true,
         args:[
-            "--disable-gpu",
-            "--disable-setuid-sandbox",
-            "--force-device-scale-factor",
-            "--ignore-certificate-errors",
-            "--unhandled-rejections=strict",
+            // "--disable-setuid-sandbox",
+            // "--force-device-scale-factor",
+            // "--ignore-certificate-errors",
+            // "--unhandled-rejections=strict",
             "--no-sandbox",
         ]});
+
     const page = await browser.newPage();
     await page.setViewport({ width: 2000, height: 2000});
     await page.goto(URL_LOGIN,{
@@ -40,12 +40,9 @@ const loginToWeb = async (cmnd)=>{
         await browser.close();
     }
     let element = await page.$('[id="T:oc_5065589220region1:btntimkiemkh"]');
-    await page.waitFor(100);
-    // await element.click();
-    // await page.waitFor(1000);
     await Promise.all([
         element.click(),
-        waitForNetworkIdle(page, 1000, 0) // equivalent to 'networkidle0'
+        waitForNetworkIdle(page, 300, 0) // equivalent to 'networkidle0'
     ]);
     let data = await page.evaluate(() => document.querySelector('*').outerHTML);
     let $ = cheerio.load(data);
@@ -69,12 +66,12 @@ const loginToWeb = async (cmnd)=>{
     let buttonSearch = await page.$('[id="T:oc_6025695556region1:btnhotrotimkiem"]');
     await Promise.all([
         buttonSearch.click(),
-        waitForNetworkIdle(page, 500, 0) // equivalent to 'networkidle0'
+        waitForNetworkIdle(page, 200, 0) // equivalent to 'networkidle0'
     ]);
     let buttonYes = await page.$('[id="T:oc_6025695556region1:tnYes"]');
     await Promise.all([
         buttonYes.click(),
-        waitForNetworkIdle(page, 300, 0) // equivalent to 'networkidle0'
+        waitForNetworkIdle(page, 200, 0) // equivalent to 'networkidle0'
     ]);
     let result = await page.evaluate(()=>{
         let cic = document.getElementById("T:oc_6025695556region1:txtmacic::content").value ;
