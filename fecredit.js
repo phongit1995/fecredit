@@ -99,7 +99,7 @@ const getDataReviews =async (Application,Contract,cookie)=>{
         },
     }
     let data = await request(options);
-    data = data.replace("/Images/FE_CREDIT_Logo_ngang.png","/logo-fe-credit.png");
+    data = data.replace("/Images/FE_CREDIT_Logo_ngang.png","/FE_CREDIT_Logo_ngang.png");
     return data ;
 }
 module.exports={
