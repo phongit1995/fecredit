@@ -5,6 +5,7 @@ let cros = require("cors");
 let bodyParser  = require("body-parser");
 let feCreditRoute = require("./router/fecredit");
 let cicRouter = require("./router/cic");
+app.use(express.static('public'))
 app.use(cros());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());

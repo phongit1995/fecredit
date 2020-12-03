@@ -99,7 +99,7 @@ const getDataReviews =async (Application,Contract,cookie)=>{
         },
     }
     let data = await request(options);
-    data = data.replace("/Images/FE_CREDIT_Logo_ngang.png","http://taichinh.caphethat.net/upload/FE_CREDIT_Logo_ngang.png");
+    data = data.replace("/Images/FE_CREDIT_Logo_ngang.png","/logo-fe-credit.png");
     return data ;
 }
 module.exports={
